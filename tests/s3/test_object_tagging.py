@@ -1058,8 +1058,11 @@ class TestObjectTagging:
                                        tag_count=S3_OBJ_TST["test_9419"]["tag_count"])
         self.log.info("Created a bucket, uploading an object and setting tags for object")
         self.log.info("Getting uploaded object")
-        resp = self.s3_test_obj.get_object(self.bucket_name, self.object_name)
-        assert_utils.assert_true(resp[0], resp[1])
+        for _ in range(5):
+            resp = self.s3_test_obj.get_object(self.bucket_name, self.object_name)
+            assert_utils.assert_true(resp[0], resp[1])
+            if 'TagCount' in resp[1]:
+                break
         assert_utils.assert_equal(
             resp[1]['TagCount'], S3_OBJ_TST["test_9419"]["tag_count"], resp[1])
         self.log.info("Object is Retrieved using GET object")
